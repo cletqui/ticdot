@@ -6,6 +6,7 @@
   "private": true,
   "dependencies": {},
   "pebble": {
+    "displayName": "Tictoc Alt",
     "shortName": "Tictoc Alt",
     "longName": "Tictoc Alternative",
     "uuid": "a4a5ae60-d85f-44d0-a8cf-2652eeed7e4c",

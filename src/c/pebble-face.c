@@ -27,7 +27,7 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
     int32_t angle = (TRIG_MAX_ANGLE * i) / 4;
     GColor color = (i == 0 && !s_connected) ? GColorRed : GColorWhite;
     graphics_context_set_fill_color(ctx, color);
-    graphics_fill_circle(ctx, point_on_circle(center, angle, 64), 3);
+    graphics_fill_circle(ctx, point_on_circle(center, angle, 68), 3);
   }
 
   // Battery dots — hand tip (55) → cardinal dots (64) → battery dots (73): 9px
@@ -36,20 +36,20 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
     int32_t angle = (TRIG_MAX_ANGLE * (150 + i * 7)) / 360;
     GColor color = (i < s_battery_filled) ? GColorLightGray : GColorDarkGray;
     graphics_context_set_fill_color(ctx, color);
-    graphics_fill_circle(ctx, point_on_circle(center, angle, 73), 2);
+    graphics_fill_circle(ctx, point_on_circle(center, angle, 77), 2);
   }
 
   int32_t hour_angle =
       (TRIG_MAX_ANGLE * (((t->tm_hour % 12) * 60) + t->tm_min)) / (12 * 60);
   int32_t minute_angle = (TRIG_MAX_ANGLE * t->tm_min) / 60;
 
-  graphics_context_set_stroke_width(ctx, 6);
+  graphics_context_set_stroke_width(ctx, 8);
 
   graphics_context_set_stroke_color(ctx, GColorOrange);
-  graphics_draw_line(ctx, center, point_on_circle(center, hour_angle, 40));
+  graphics_draw_line(ctx, center, point_on_circle(center, hour_angle, 44));
 
   graphics_context_set_stroke_color(ctx, GColorWhite);
-  graphics_draw_line(ctx, center, point_on_circle(center, minute_angle, 55));
+  graphics_draw_line(ctx, center, point_on_circle(center, minute_angle, 59));
 }
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
