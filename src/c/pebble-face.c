@@ -22,13 +22,9 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
   graphics_context_set_fill_color(ctx, GColorBlack);
   graphics_fill_rect(ctx, bounds, 0, GCornerNone);
 
-  // Cardinal dots — 12 o'clock doubles as bluetooth indicator
-  for (int i = 0; i < 4; i++) {
-    int32_t angle = (TRIG_MAX_ANGLE * i) / 4;
-    GColor color = (i == 0 && !s_connected) ? GColorRed : GColorWhite;
-    graphics_context_set_fill_color(ctx, color);
-    graphics_fill_circle(ctx, point_on_circle(center, angle, 94), 3);
-  }
+  // 12 o'clock dot — doubles as bluetooth indicator
+  graphics_context_set_fill_color(ctx, s_connected ? GColorWhite : GColorRed);
+  graphics_fill_circle(ctx, point_on_circle(center, 0, 94), 3);
 
   // Battery dots — hand tip (55) → cardinal dots (64) → battery dots (73): 9px
   // each
