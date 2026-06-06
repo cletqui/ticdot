@@ -1,5 +1,5 @@
 {
-    "displayName": "pebble-face",
+    "displayName": "Minimal",
     "uuid": "a4a5ae60-d85f-44d0-a8cf-2652eeed7e4c",
     "sdkVersion": "3",
     "enableMultiJS": true,
@@ -15,19 +15,15 @@
     "watchapp": {
         "watchface": true
     },
-    "messageKeys": {
-        "dummy": 10000
-    },
+    "messageKeys": {},
     "resources": {
         "media": []
     },
     "name": "pebble-face",
-    "shortName": "pebble-face",
-    "longName": "pebble-face",
+    "shortName": "Minimal",
+    "longName": "Minimal",
     "versionLabel": "1.0.0",
-    "companyName": "MakeAwesomeHappen",
-    "appKeys": {
-        "dummy": 10000
-    },
+    "companyName": "clet",
+    "appKeys": {},
     "capabilities": []
 }
