@@ -1,0 +1,6 @@
+CompileFlags:
+  Add:
+    - -I/home/clet/.local/share/pebble-sdk/SDKs/4.9.169/sdk-core/pebble/basalt/include
+    - -DPBL_COLOR
+    - -DPBL_RECT
+    - -std=c11
