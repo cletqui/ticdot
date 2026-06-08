@@ -130,7 +130,7 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
         graphics_fill_circle(ctx, point_on_circle(center, deg_to_trig(30 + i * 10), s_outer_r), 2);
     }
 
-    // Step dots (4:30–7:30): 10 dots at 135°–225°, 10° spacing — outer step ring
+    // Step dots (4:30–7:30): 10 dots at 225°–135°, 10° spacing — outer step ring, fills left→right
     if (s_settings.show_step_dots) {
         GColor step_color = s_step_cycle == 0 ? GColorWhite
                           : s_step_cycle == 1  ? get_color(s_settings.over_goal_1_idx)
@@ -138,7 +138,7 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
         for (int i = 0; i < 10; i++) {
             bool lit = (i < s_step_lit);
             graphics_context_set_fill_color(ctx, lit ? step_color : GColorDarkGray);
-            graphics_fill_circle(ctx, point_on_circle(center, deg_to_trig(135 + i * 10), s_step_r), 2);
+            graphics_fill_circle(ctx, point_on_circle(center, deg_to_trig(225 - i * 10), s_step_r), 2);
         }
     }
 
