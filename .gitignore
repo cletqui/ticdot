@@ -1,3 +1,5 @@
 build/
 .lock-waf_linux_build
 .clangd
+node_modules/
+package-lock.json

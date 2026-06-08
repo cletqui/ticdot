@@ -1,10 +1,14 @@
 {
   "name": "tictoc-alt",
   "author": "clet",
-  "version": "1.1.0",
-  "keywords": ["pebble-app"],
+  "version": "1.3.0",
+  "keywords": [
+    "pebble-app"
+  ],
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "pebble-clay": "^1.0.4"
+  },
   "pebble": {
     "displayName": "Tictoc Alt",
     "shortName": "Tictoc Alt",
@@ -13,18 +17,21 @@
     "sdkVersion": "3",
     "enableMultiJS": true,
     "targetPlatforms": [
-      "aplite",
       "basalt",
       "chalk",
-      "diorite",
-      "emery",
-      "flint",
-      "gabbro"
+      "emery"
     ],
     "watchapp": {
       "watchface": true
     },
-    "messageKeys": [],
+    "messageKeys": [
+      "StepGoal",
+      "VibrateOnDisconnect",
+      "ShowStepDots",
+      "HourColor",
+      "OverGoalColor1",
+      "OverGoalColor2"
+    ],
     "resources": {
       "media": []
     }
