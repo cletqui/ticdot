@@ -38,7 +38,7 @@ Reading left → right (9 o'clock → 12 o'clock): bit values **1 · 2 · 4 · 8
 - Battery and Bluetooth are event-driven; canvas only redraws when display state changes
 - Geometry fully responsive: adapts to basalt (144×168), chalk (180×180 round), emery (200×228)
 - Unobstructed area aware (timeline peek support)
-- Settings page via Clay (phone app): step goal, over-goal colors, hour hand color, vibration toggle, step dot visibility
+- Settings page via Clay (phone app): step goal, over-goal colors, hand colors, vibration toggle, per-indicator visibility
 
 ## Platforms
 
@@ -64,12 +64,15 @@ Configured from the Pebble / Rebble phone app:
 
 | Setting | Default |
 |---|---|
+| Show date dots | On |
+| Show battery dots | On |
 | Daily step goal | 10 000 |
+| Show step dots | On |
+| Hour hand color | Orange |
+| Minute hand color | White |
 | 1st over-goal color | Orange |
 | 2nd over-goal color | Cyan |
-| Hour hand color | Orange |
 | Vibrate on disconnect | On |
-| Show step dots | On |
 
 Available colors: Orange, Red, Green, Blue, Cyan, Yellow, Magenta, White.
 
