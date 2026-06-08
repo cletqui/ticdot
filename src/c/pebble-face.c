@@ -9,7 +9,7 @@ static Layer *s_canvas;
 
 // Geometry computed from display bounds — recalculated on unobstructed area change
 static int s_outer_r;   // radius for outer dot ring (12 o'clock, battery, day dots)
-static int s_step_r;    // radius for step + month dots (just outside outer ring)
+static int s_step_r;    // radius for step dots (just outside outer ring)
 static int s_hour_len;
 static int s_min_len;
 
@@ -78,6 +78,13 @@ static void compute_geometry(GRect bounds) {
     s_min_len  = s_outer_r * 74 / 94;
 }
 
+static void update_battery_state(int charge_percent) {
+    int dots      = (charge_percent + 19) / 20;  // 1–5 at 20% increments
+    if (dots > 5) dots = 5;
+    s_battery_dots     = dots;
+    s_battery_critical = (dots == 1);
+}
+
 static void update_step_state(void) {
     int32_t steps = 0;
 #if defined(PBL_HEALTH)
@@ -89,8 +96,8 @@ static void update_step_state(void) {
 #endif
     int goal = s_settings.step_goal > 0 ? s_settings.step_goal : STEP_GOAL_DEFAULT;
     int cycle = steps / goal;
-    int lit   = (int32_t)(steps % goal) * 10 / goal;
-    s_step_lit   = lit > 10 ? 10 : lit;
+    int lit   = (int32_t)(steps % goal) * 10 / goal;  // always 0–9
+    s_step_lit   = lit;
     s_step_cycle = cycle > 2 ? 2 : cycle;
 }
 
@@ -164,12 +171,10 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 }
 
 static void battery_handler(BatteryChargeState state) {
-    int dots      = (state.charge_percent + 19) / 20;  // 1–5 at 20% increments
-    bool critical = (dots == 1);
-    if (dots > 5) dots = 5;
-    if (dots != s_battery_dots || critical != s_battery_critical) {
-        s_battery_dots     = dots;
-        s_battery_critical = critical;
+    int prev_dots     = s_battery_dots;
+    bool prev_critical = s_battery_critical;
+    update_battery_state(state.charge_percent);
+    if (s_battery_dots != prev_dots || s_battery_critical != prev_critical) {
         layer_mark_dirty(s_canvas);
     }
 }
@@ -225,10 +230,7 @@ static void prv_window_unload(Window *window) {
 static void prv_init(void) {
     load_settings();
 
-    BatteryChargeState bat = battery_state_service_peek();
-    int dots           = (bat.charge_percent + 19) / 20;
-    s_battery_dots     = dots > 5 ? 5 : dots;
-    s_battery_critical = (s_battery_dots == 1);
+    update_battery_state(battery_state_service_peek().charge_percent);
     s_connected        = connection_service_peek_pebble_app_connection();
 
     update_step_state();
