@@ -10,6 +10,27 @@ var clayConfig = [
     "items": [
       {
         "type": "heading",
+        "defaultValue": "Display"
+      },
+      {
+        "type": "toggle",
+        "messageKey": "ShowDateDots",
+        "label": "Show Date Dots",
+        "defaultValue": true
+      },
+      {
+        "type": "toggle",
+        "messageKey": "ShowBatteryDots",
+        "label": "Show Battery Dots",
+        "defaultValue": true
+      }
+    ]
+  },
+  {
+    "type": "section",
+    "items": [
+      {
+        "type": "heading",
         "defaultValue": "Steps"
       },
       {
@@ -41,6 +62,22 @@ var clayConfig = [
         "messageKey": "HourColor",
         "label": "Hour Hand",
         "defaultValue": 0,
+        "options": [
+          {"label": "Orange",   "value": 0},
+          {"label": "Red",      "value": 1},
+          {"label": "Green",    "value": 2},
+          {"label": "Blue",     "value": 3},
+          {"label": "Cyan",     "value": 4},
+          {"label": "Yellow",   "value": 5},
+          {"label": "Magenta",  "value": 6},
+          {"label": "White",    "value": 7}
+        ]
+      },
+      {
+        "type": "select",
+        "messageKey": "MinuteColor",
+        "label": "Minute Hand",
+        "defaultValue": 7,
         "options": [
           {"label": "Orange",   "value": 0},
           {"label": "Red",      "value": 1},

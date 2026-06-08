@@ -1,7 +1,7 @@
 {
   "name": "tictoc-alt",
   "author": "clet",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "keywords": [
     "pebble-app"
   ],
@@ -28,7 +28,10 @@
       "StepGoal",
       "VibrateOnDisconnect",
       "ShowStepDots",
+      "ShowDateDots",
+      "ShowBatteryDots",
       "HourColor",
+      "MinuteColor",
       "OverGoalColor1",
       "OverGoalColor2"
     ],

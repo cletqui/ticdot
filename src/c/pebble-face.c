@@ -25,7 +25,10 @@ typedef struct {
     int step_goal;
     bool vibrate_disconnect;
     bool show_step_dots;
+    bool show_date_dots;
+    bool show_battery_dots;
     uint8_t hour_color_idx;
+    uint8_t minute_color_idx;
     uint8_t over_goal_1_idx;
     uint8_t over_goal_2_idx;
 } Settings;
@@ -47,7 +50,10 @@ static void load_settings(void) {
         .step_goal = STEP_GOAL_DEFAULT,
         .vibrate_disconnect = true,
         .show_step_dots = true,
+        .show_date_dots = true,
+        .show_battery_dots = true,
         .hour_color_idx = 0,
+        .minute_color_idx = 7,
         .over_goal_1_idx = 0,
         .over_goal_2_idx = 4,
     };
@@ -123,11 +129,13 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
 
     // Battery dots (1–2 o'clock): 5 dots, 10° spacing, fills from 3-o'clock side upward
     // Each dot = 20% charge. Critical (≤20%): single dot near 3 o'clock turns red.
-    for (int i = 0; i < 5; i++) {
-        bool lit  = (i >= 5 - s_battery_dots);
-        GColor color = !lit ? GColorDarkGray : (s_battery_critical ? GColorRed : GColorWhite);
-        graphics_context_set_fill_color(ctx, color);
-        graphics_fill_circle(ctx, point_on_circle(center, deg_to_trig(30 + i * 10), s_outer_r), 2);
+    if (s_settings.show_battery_dots) {
+        for (int i = 0; i < 5; i++) {
+            bool lit  = (i >= 5 - s_battery_dots);
+            GColor color = !lit ? GColorDarkGray : (s_battery_critical ? GColorRed : GColorWhite);
+            graphics_context_set_fill_color(ctx, color);
+            graphics_fill_circle(ctx, point_on_circle(center, deg_to_trig(30 + i * 10), s_outer_r), 2);
+        }
     }
 
     // Step dots (4:30–7:30): 10 dots at 225°–135°, 10° spacing — outer step ring, fills left→right
@@ -145,10 +153,12 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
     // Day-of-month dots (10–11 o'clock): 5 dots, binary encoding LSB→MSB left→right
     // Mirrors battery group: both groups span 30°–70° from 12 o'clock on their side.
     // Bit values: dot0=1 (290°, nearest 9), dot4=16 (330°, nearest 12)
-    for (int i = 0; i < 5; i++) {
-        bool lit = (s_day & (1 << i)) != 0;
-        graphics_context_set_fill_color(ctx, lit ? GColorWhite : GColorDarkGray);
-        graphics_fill_circle(ctx, point_on_circle(center, deg_to_trig(290 + i * 10), s_outer_r), 2);
+    if (s_settings.show_date_dots) {
+        for (int i = 0; i < 5; i++) {
+            bool lit = (s_day & (1 << i)) != 0;
+            graphics_context_set_fill_color(ctx, lit ? GColorWhite : GColorDarkGray);
+            graphics_fill_circle(ctx, point_on_circle(center, deg_to_trig(290 + i * 10), s_outer_r), 2);
+        }
     }
 
     // Clock hands
@@ -158,7 +168,7 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
     graphics_context_set_stroke_width(ctx, 10);
     graphics_context_set_stroke_color(ctx, get_color(s_settings.hour_color_idx));
     graphics_draw_line(ctx, center, point_on_circle(center, hour_angle, s_hour_len));
-    graphics_context_set_stroke_color(ctx, GColorWhite);
+    graphics_context_set_stroke_color(ctx, get_color(s_settings.minute_color_idx));
     graphics_draw_line(ctx, center, point_on_circle(center, minute_angle, s_min_len));
 }
 
@@ -195,8 +205,14 @@ static void inbox_received(DictionaryIterator *iter, void *context) {
     if (t) s_settings.vibrate_disconnect = t->value->uint8 != 0;
     t = dict_find(iter, MESSAGE_KEY_ShowStepDots);
     if (t) s_settings.show_step_dots = t->value->uint8 != 0;
+    t = dict_find(iter, MESSAGE_KEY_ShowDateDots);
+    if (t) s_settings.show_date_dots = t->value->uint8 != 0;
+    t = dict_find(iter, MESSAGE_KEY_ShowBatteryDots);
+    if (t) s_settings.show_battery_dots = t->value->uint8 != 0;
     t = dict_find(iter, MESSAGE_KEY_HourColor);
     if (t) s_settings.hour_color_idx = t->value->uint8;
+    t = dict_find(iter, MESSAGE_KEY_MinuteColor);
+    if (t) s_settings.minute_color_idx = t->value->uint8;
     t = dict_find(iter, MESSAGE_KEY_OverGoalColor1);
     if (t) s_settings.over_goal_1_idx = t->value->uint8;
     t = dict_find(iter, MESSAGE_KEY_OverGoalColor2);
