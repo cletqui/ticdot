@@ -1,7 +1,7 @@
 {
-  "name": "tictoc-alt",
+  "name": "ticdot",
   "author": "clet",
-  "version": "1.4.0",
+  "version": "2.1.0",
   "keywords": [
     "pebble-app"
   ],
@@ -10,9 +10,9 @@
     "pebble-clay": "^1.0.4"
   },
   "pebble": {
-    "displayName": "Tictoc Alt",
-    "shortName": "Tictoc Alt",
-    "longName": "Tictoc Alternative",
+    "displayName": "TicDot",
+    "shortName": "TicDot",
+    "longName": "TicDot",
     "uuid": "a4a5ae60-d85f-44d0-a8cf-2652eeed7e4c",
     "sdkVersion": "3",
     "enableMultiJS": true,
@@ -33,7 +33,34 @@
       "HourColor",
       "MinuteColor",
       "OverGoalColor1",
-      "OverGoalColor2"
+      "OverGoalColor2",
+      "ShowMonthDots",
+      "ShowWeekdayDot",
+      "ShowAlarmDot",
+      "ShowNotifDot",
+      "ShowEventDot",
+      "BtColor",
+      "AlarmColor",
+      "NotifNormalColor",
+      "NotifAlertColor",
+      "NotifThreshold",
+      "EventColor",
+      "WeekdayColor0",
+      "WeekdayColor1",
+      "WeekdayColor2",
+      "WeekdayColor3",
+      "WeekdayColor4",
+      "WeekdayColor5",
+      "WeekdayColor6",
+      "NotifCount",
+      "AlarmPending",
+      "EventPending",
+      "ShowHrDot",
+      "ShowActivityDot",
+      "HrColor",
+      "HrAlertColor",
+      "HrAlertBpm",
+      "ActivityColor"
     ],
     "resources": {
       "media": []

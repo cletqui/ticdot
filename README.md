@@ -1,48 +1,115 @@
-# pebble-face
+# TicDot
 
-Minimal analog watchface for Pebble color watches, written in C.
+Minimal analog watchface for Pebble color watches. All information is encoded as colored dots on a single ring, arranged clockwise from 12 o'clock.
 
 ## Layout
 
-All indicators are dots arranged clockwise around the outer edge:
-
 ```
-             ●          ← 12 o'clock (bigger dot, red = BT off)
-        ○ ○ ○ ○ ○       ← battery (1–2 o'clock, 5 dots × 20%)
-   ○                    ← day in binary (10–11 o'clock, 5 dots)
-     ○ ○ ○ ○            ←   MSB left, LSB right
-                        ←   e.g. day 13 = 01101 = ○●●○●
-   ○ ○ ○ ○ ○ ○ ○ ○ ○ ○ ← steps (4:30–7:30, 10 dots = daily goal)
+                  ●               ← Bluetooth (12 o'clock)
+          ● ● ● ● ●               ← Battery   (right, 5 dots)
+                    ●             ← Alarm
+                      ●           ← Notification
+                        ●         ← Event
+                          ●       ← Heart rate
+                            ●     ← Activity
+  ● ● ● ●                         ← Month     (left, 4 dots binary)
+    ● ● ● ● ●                     ← Date      (left, 5 dots binary)
+              ●                   ← Weekday
+  ○ ○ ○ ○ ○ ○ ○ ○ ○ ○            ← Steps     (bottom arc, 10 dots)
 ```
 
-### Battery (1–2 o'clock) — 5 dots, 10° spacing
-Each dot = 20% charge. All white when full, bottom dot red when ≤ 20%.
+Every dot sits on the same outer ring. Groups shift inward when disabled so the ring stays compact.
 
-### Steps (4:30–7:30) — 10 dots, 10° spacing
-Each dot = 1/10th of the daily goal (default 10 000 steps). Dimmed gray until reached, white when hit. Cycles to a second color on the next lap, third color on the lap after.
+## Dot reference
 
-### Day of month (10–11 o'clock) — 5 dots, binary
-Reading left → right (9 o'clock → 12 o'clock): bit values **1 · 2 · 4 · 8 · 16** (LSB nearest 9 o'clock, symmetric with battery group). Lit dot = 1, dimmed = 0.
+### Bluetooth (12 o'clock)
+Single larger dot. Configured color (default White) when connected, Red when disconnected.
 
-| Day | Binary | Pattern (LSB left) |
-|-----|--------|--------------------|
-| 1   | 00001  | ● ○ ○ ○ ○ |
-| 8   | 01000  | ○ ○ ○ ● ○ |
-| 13  | 01101  | ● ○ ● ● ○ |
-| 31  | 11111  | ● ● ● ● ● |
+### Battery (1–2 o'clock) — 5 dots
+Each dot represents 20% charge, filling toward 12. Color reflects charge level:
 
-## Features
+| Dots lit | Charge | Color  |
+|----------|--------|--------|
+| 5        | 100%   | White  |
+| 4        | 80%    | White  |
+| 3        | 60%    | Yellow |
+| 2        | 40%    | Orange |
+| 1        | 20%    | Red    |
 
-- Updates on `MINUTE_UNIT` only — no per-second wakeups
-- Steps polled in the minute tick (no extra health subscription)
-- Battery and Bluetooth are event-driven; canvas only redraws when display state changes
-- Geometry fully responsive: adapts to basalt (144×168), chalk (180×180 round), emery (200×228)
-- Unobstructed area aware (timeline peek support)
-- Settings page via Clay (phone app): step goal, over-goal colors, hand colors, vibration toggle, per-indicator visibility
+All lit dots turn **Cyan** while charging.
+
+### Status dots (2–3 o'clock)
+Single dots arranged clockwise after the battery group. Each can be toggled independently.
+
+| Dot          | Dim (off)  | Lit (on)               |
+|--------------|------------|------------------------|
+| Alarm        | No alarm   | Upcoming alarm pending |
+| Notification | No notifs  | Unread notifications; alert color above threshold |
+| Event        | No events  | Upcoming calendar event |
+| Heart rate   | No reading | Normal BPM; alert color above threshold |
+| Activity     | Idle       | Walk or run detected   |
+
+### Steps (4:30–7:30) — 10 dots
+Each dot = 1/10th of the daily goal (default 10 000 steps). Lights up as steps accumulate. On reaching the goal the color cycles: White → Over-goal 1 → Over-goal 2.
+
+### Month (10–11 o'clock) — 4 dots, binary
+4-bit encoding, MSB nearest 12. January = `0001`, December = `1100`.
+
+### Date (10–11 o'clock) — 5 dots, binary
+5-bit encoding, MSB nearest 12. Day 1 = `00001`, day 31 = `11111`.
+
+### Weekday (10 o'clock) — 1 dot
+Color encodes the day, defaulting to the French/ancient planetary associations:
+
+| Day       | Planet   | Color     |
+|-----------|----------|-----------|
+| Sunday    | Sol      | Yellow    |
+| Monday    | Luna     | Light Gray |
+| Tuesday   | Mars     | Red       |
+| Wednesday | Mercury  | Orange    |
+| Thursday  | Jupiter  | Blue      |
+| Friday    | Venus    | Green     |
+| Saturday  | Saturn   | Magenta   |
+
+All seven colors are individually configurable.
+
+## Settings
+
+Configured from the Pebble / Rebble phone app. All dot groups can be toggled on or off individually; the layout adapts automatically.
+
+| Section       | Setting                        | Default    |
+|---------------|--------------------------------|------------|
+| Display       | Battery / Steps / Date / Month / Weekday | All on |
+| Display       | Alarm / Event dots             | On         |
+| Display       | Notification dot               | Off        |
+| Display       | Heart rate / Activity dots     | On         |
+| Steps         | Daily step goal                | 10 000     |
+| Steps         | 1st / 2nd over-goal color      | Orange / Cyan |
+| Clock Hands   | Hour hand color                | Orange     |
+| Clock Hands   | Minute hand color              | White      |
+| Bluetooth     | Vibrate on disconnect          | On         |
+| Bluetooth     | Connected dot color            | White      |
+| Alarm & Events| Alarm / Event dot color        | White      |
+| Notifications | Normal / Alert color           | White / Red |
+| Notifications | Alert threshold (notif count)  | 5          |
+| Health        | Heart rate normal / alert color | White / Red |
+| Health        | HR alert threshold (BPM)       | 100        |
+| Health        | Activity dot color             | Green      |
+| Weekday Colors| Per-day color (Sun–Sat)        | Planetary  |
+
+Available colors: Orange, Red, Green, Blue, Cyan, Yellow, Magenta, White, Light Gray.
+
+## Power
+
+- Ticks on `MINUTE_UNIT` only — no per-second wakeups
+- Battery and Bluetooth handlers are fully event-driven
+- Heart rate and activity update on health events only, not every tick
+- Canvas redraws only when display state changes
+- No system calls in the draw pass
 
 ## Platforms
 
-Color platforms only: **basalt**, **chalk**, **emery**.
+Color platforms only: **basalt** (Pebble Time), **chalk** (Pebble Time Round), **emery** (Pebble Time 2).
 
 ## Building
 
@@ -56,26 +123,9 @@ pebble install --phone <ip>          # sideload via Developer Mode
 pebble install --cloudpebble         # sideload via Rebble proxy
 ```
 
-> `pebble package install pebble-clay` fails when `npm` is not in the pebble-tool PATH — use `npm install` directly.
+> Run `pebble clean` before rebuilding after any `messageKeys` change in `package.json`.
 
-## Settings
+## References
 
-Configured from the Pebble / Rebble phone app:
-
-| Setting | Default |
-|---|---|
-| Show date dots | On |
-| Show battery dots | On |
-| Daily step goal | 10 000 |
-| Show step dots | On |
-| Hour hand color | Orange |
-| Minute hand color | White |
-| 1st over-goal color | Orange |
-| 2nd over-goal color | Cyan |
-| Vibrate on disconnect | On |
-
-Available colors: Orange, Red, Green, Blue, Cyan, Yellow, Magenta, White.
-
-## Documentation
-
-Full SDK docs and API reference: <https://developer.rebble.io>
+- Rebble SDK docs: <https://developer.rebble.io>
+- Rebble app store: <https://apps.rebble.io>
