@@ -4,7 +4,7 @@ Minimal analog watchface for Pebble color watches. All information is encoded as
 
 ## Layout
 
-All dots share the same outer ring. Starting at **12 o'clock** and going **clockwise**:
+All dots share the same outer ring. Going **clockwise from 12**:
 
 | Position | Group | Dots |
 |----------|-------|------|
@@ -12,14 +12,9 @@ All dots share the same outer ring. Starting at **12 o'clock** and going **clock
 | 1–2 o'clock | Battery | 5 |
 | 2–3 o'clock | Alarm, Notification, Event, Heart rate, Activity | 1 each |
 | 4:30–7:30 | Steps | 10 |
-
-Going **counter-clockwise** from 12:
-
-| Position | Group | Dots |
-|----------|-------|------|
-| 11–10 o'clock | Month | 4 (binary) |
-| 10–9 o'clock | Date | 5 (binary) |
-| ~10 o'clock | Weekday | 1 |
+| ~9:30 | Weekday | 1 |
+| 9:30–10:30 | Date | 5 (binary) |
+| 10:30–11 | Month | 4 (binary) |
 
 Groups that are disabled are skipped and the remaining ones compact toward 12.
 
