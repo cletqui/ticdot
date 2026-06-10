@@ -105,7 +105,7 @@ var clayConfig = [
         max: 30000,
         step: 1000,
       },
-      colorSelect("OverGoalColor1", "1st Over-Goal Color", 0),
+      colorSelect("OverGoalColor1", "1st Over-Goal Color", 2),
       colorSelect("OverGoalColor2", "2nd Over-Goal Color", 4),
     ],
   },

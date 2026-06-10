@@ -89,7 +89,7 @@ Configured from the Pebble / Rebble phone app. All dot groups can be toggled on 
 | Display        | Notification dot                         | Off           |
 | Display        | Heart rate / Activity dots               | On            |
 | Steps          | Daily step goal                          | 10 000        |
-| Steps          | 1st / 2nd over-goal color                | Orange / Cyan |
+| Steps          | 1st / 2nd over-goal color                | Green / Cyan  |
 | Clock Hands    | Hour hand color                          | Red           |
 | Clock Hands    | Minute hand color                        | White         |
 | Bluetooth      | Vibrate on disconnect                    | On            |

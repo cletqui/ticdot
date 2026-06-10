@@ -84,7 +84,7 @@ static void load_settings(void) {
       .show_battery_dots = true,
       .hour_color_idx = 1,   // Red
       .minute_color_idx = 7, // White
-      .over_goal_1_idx = 0,  // Orange
+      .over_goal_1_idx = 2,  // Green
       .over_goal_2_idx = 4,  // Cyan
       .show_month_dots = true,
       .show_weekday_dot = true,
