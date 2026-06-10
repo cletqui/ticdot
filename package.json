@@ -1,7 +1,7 @@
 {
   "name": "ticdot",
   "author": "clet",
-  "version": "2.1.0",
+  "version": "1.0.0",
   "keywords": [
     "pebble-app"
   ],
@@ -13,7 +13,7 @@
     "displayName": "TicDot",
     "shortName": "TicDot",
     "longName": "TicDot",
-    "uuid": "a4a5ae60-d85f-44d0-a8cf-2652eeed7e4c",
+    "uuid": "cd64b821-99ec-4820-8220-f85c716eba8f",
     "sdkVersion": "3",
     "enableMultiJS": true,
     "targetPlatforms": [
