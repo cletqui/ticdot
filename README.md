@@ -134,3 +134,4 @@ pebble install --cloudpebble         # sideload via Rebble proxy
 
 - Rebble SDK docs: <https://developer.rebble.io>
 - Rebble app store: <https://apps.rebble.io>
+- TicDot on Rebble: <https://apps.repebble.com/01d9cb793d7b4f109ad3a9cc>
