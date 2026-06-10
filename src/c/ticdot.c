@@ -387,18 +387,18 @@ static void connection_handler(bool connected) {
 static void inbox_received(DictionaryIterator *iter, void *context) {
   Tuple *t;
 
-#define APPLY_BOOL(key, field)                                                 \
-  t = dict_find(iter, key);                                                    \
-  if (t)                                                                       \
-    s_settings.field = t->value->uint8 != 0;
-#define APPLY_U8(key, field)                                                   \
-  t = dict_find(iter, key);                                                    \
-  if (t)                                                                       \
-    s_settings.field = t->value->uint8;
-#define APPLY_I32(key, field)                                                  \
-  t = dict_find(iter, key);                                                    \
-  if (t)                                                                       \
-    s_settings.field = t->value->int32;
+// Clay sends select/slider values as CSTRING (HTML form data is always strings).
+// Read with atoi() when the tuple type is CSTRING, fall back to numeric read otherwise.
+#define TUPLE_INT_VAL(t)  ((t)->type == TUPLE_CSTRING ? atoi((t)->value->cstring) : (t)->value->int32)
+#define APPLY_BOOL(key, field) \
+  t = dict_find(iter, key);   \
+  if (t) s_settings.field = TUPLE_INT_VAL(t) != 0;
+#define APPLY_U8(key, field)   \
+  t = dict_find(iter, key);   \
+  if (t) s_settings.field = (uint8_t)TUPLE_INT_VAL(t);
+#define APPLY_I32(key, field)  \
+  t = dict_find(iter, key);   \
+  if (t) s_settings.field = (int)TUPLE_INT_VAL(t);
 
   APPLY_I32(MESSAGE_KEY_StepGoal, step_goal)
   APPLY_BOOL(MESSAGE_KEY_VibrateOnDisconnect, vibrate_disconnect)
@@ -434,7 +434,7 @@ static void inbox_received(DictionaryIterator *iter, void *context) {
   for (int day = 0; day < 7; day++) {
     t = dict_find(iter, MESSAGE_KEY_WeekdayColor0 + day);
     if (t)
-      s_settings.weekday_color_idx[day] = t->value->uint8;
+      s_settings.weekday_color_idx[day] = (uint8_t)TUPLE_INT_VAL(t);
   }
 
   t = dict_find(iter, MESSAGE_KEY_NotifCount);
