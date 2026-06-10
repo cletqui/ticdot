@@ -4,32 +4,37 @@ Minimal analog watchface for Pebble color watches. All information is encoded as
 
 ## Layout
 
-```
-                  ●               ← Bluetooth (12 o'clock)
-          ● ● ● ● ●               ← Battery   (right, 5 dots)
-                    ●             ← Alarm
-                      ●           ← Notification
-                        ●         ← Event
-                          ●       ← Heart rate
-                            ●     ← Activity
-  ● ● ● ●                         ← Month     (left, 4 dots binary)
-    ● ● ● ● ●                     ← Date      (left, 5 dots binary)
-              ●                   ← Weekday
-  ○ ○ ○ ○ ○ ○ ○ ○ ○ ○            ← Steps     (bottom arc, 10 dots)
-```
+All dots share the same outer ring. Starting at **12 o'clock** and going **clockwise**:
 
-Every dot sits on the same outer ring. Groups shift inward when disabled so the ring stays compact.
+| Position | Group | Dots |
+|----------|-------|------|
+| 12 o'clock | Bluetooth | 1 (larger) |
+| 1–2 o'clock | Battery | 5 |
+| 2–3 o'clock | Alarm, Notification, Event, Heart rate, Activity | 1 each |
+| 4:30–7:30 | Steps | 10 |
+
+Going **counter-clockwise** from 12:
+
+| Position | Group | Dots |
+|----------|-------|------|
+| 11–10 o'clock | Month | 4 (binary) |
+| 10–9 o'clock | Date | 5 (binary) |
+| ~10 o'clock | Weekday | 1 |
+
+Groups that are disabled are skipped and the remaining ones compact toward 12.
 
 ## Dot reference
 
 ### Bluetooth (12 o'clock)
+
 Single larger dot. Configured color (default White) when connected, Red when disconnected.
 
 ### Battery (1–2 o'clock) — 5 dots
+
 Each dot represents 20% charge, filling toward 12. Color reflects charge level:
 
 | Dots lit | Charge | Color  |
-|----------|--------|--------|
+| -------- | ------ | ------ |
 | 5        | 100%   | White  |
 | 4        | 80%    | White  |
 | 3        | 60%    | Yellow |
@@ -39,37 +44,42 @@ Each dot represents 20% charge, filling toward 12. Color reflects charge level:
 All lit dots turn **Cyan** while charging.
 
 ### Status dots (2–3 o'clock)
+
 Single dots arranged clockwise after the battery group. Each can be toggled independently.
 
-| Dot          | Dim (off)  | Lit (on)               |
-|--------------|------------|------------------------|
-| Alarm        | No alarm   | Upcoming alarm pending |
+| Dot          | Dim (off)  | Lit (on)                                          |
+| ------------ | ---------- | ------------------------------------------------- |
+| Alarm        | No alarm   | Upcoming alarm pending                            |
 | Notification | No notifs  | Unread notifications; alert color above threshold |
-| Event        | No events  | Upcoming calendar event |
-| Heart rate   | No reading | Normal BPM; alert color above threshold |
-| Activity     | Idle       | Walk or run detected   |
+| Event        | No events  | Upcoming calendar event                           |
+| Heart rate   | No reading | Normal BPM; alert color above threshold           |
+| Activity     | Idle       | Walk or run detected                              |
 
 ### Steps (4:30–7:30) — 10 dots
+
 Each dot = 1/10th of the daily goal (default 10 000 steps). Lights up as steps accumulate. On reaching the goal the color cycles: White → Over-goal 1 → Over-goal 2.
 
 ### Month (10–11 o'clock) — 4 dots, binary
+
 4-bit encoding, MSB nearest 12. January = `0001`, December = `1100`.
 
 ### Date (10–11 o'clock) — 5 dots, binary
+
 5-bit encoding, MSB nearest 12. Day 1 = `00001`, day 31 = `11111`.
 
 ### Weekday (10 o'clock) — 1 dot
+
 Color encodes the day, defaulting to the French/ancient planetary associations:
 
-| Day       | Planet   | Color     |
-|-----------|----------|-----------|
-| Sunday    | Sol      | Yellow    |
-| Monday    | Luna     | Light Gray |
-| Tuesday   | Mars     | Red       |
-| Wednesday | Mercury  | Orange    |
-| Thursday  | Jupiter  | Blue      |
-| Friday    | Venus    | Green     |
-| Saturday  | Saturn   | Magenta   |
+| Day       | Planet  | Color      |
+| --------- | ------- | ---------- |
+| Sunday    | Sol     | Yellow     |
+| Monday    | Luna    | Light Gray |
+| Tuesday   | Mars    | Red        |
+| Wednesday | Mercury | Orange     |
+| Thursday  | Jupiter | Blue       |
+| Friday    | Venus   | Green      |
+| Saturday  | Saturn  | Magenta    |
 
 All seven colors are individually configurable.
 
@@ -77,25 +87,25 @@ All seven colors are individually configurable.
 
 Configured from the Pebble / Rebble phone app. All dot groups can be toggled on or off individually; the layout adapts automatically.
 
-| Section       | Setting                        | Default    |
-|---------------|--------------------------------|------------|
-| Display       | Battery / Steps / Date / Month / Weekday | All on |
-| Display       | Alarm / Event dots             | On         |
-| Display       | Notification dot               | Off        |
-| Display       | Heart rate / Activity dots     | On         |
-| Steps         | Daily step goal                | 10 000     |
-| Steps         | 1st / 2nd over-goal color      | Orange / Cyan |
-| Clock Hands   | Hour hand color                | Orange     |
-| Clock Hands   | Minute hand color              | White      |
-| Bluetooth     | Vibrate on disconnect          | On         |
-| Bluetooth     | Connected dot color            | White      |
-| Alarm & Events| Alarm / Event dot color        | White      |
-| Notifications | Normal / Alert color           | White / Red |
-| Notifications | Alert threshold (notif count)  | 5          |
-| Health        | Heart rate normal / alert color | White / Red |
-| Health        | HR alert threshold (BPM)       | 100        |
-| Health        | Activity dot color             | Green      |
-| Weekday Colors| Per-day color (Sun–Sat)        | Planetary  |
+| Section        | Setting                                  | Default       |
+| -------------- | ---------------------------------------- | ------------- |
+| Display        | Battery / Steps / Date / Month / Weekday | All on        |
+| Display        | Alarm / Event dots                       | On            |
+| Display        | Notification dot                         | Off           |
+| Display        | Heart rate / Activity dots               | On            |
+| Steps          | Daily step goal                          | 10 000        |
+| Steps          | 1st / 2nd over-goal color                | Orange / Cyan |
+| Clock Hands    | Hour hand color                          | Red           |
+| Clock Hands    | Minute hand color                        | White         |
+| Bluetooth      | Vibrate on disconnect                    | On            |
+| Bluetooth      | Connected dot color                      | White         |
+| Alarm & Events | Alarm / Event dot color                  | White         |
+| Notifications  | Normal / Alert color                     | White / Red   |
+| Notifications  | Alert threshold (notif count)            | 5             |
+| Health         | Heart rate normal / alert color          | White / Red   |
+| Health         | HR alert threshold (BPM)                 | 100           |
+| Health         | Activity dot color                       | Green         |
+| Weekday Colors | Per-day color (Sun–Sat)                  | Planetary     |
 
 Available colors: Orange, Red, Green, Blue, Cyan, Yellow, Magenta, White, Light Gray.
 
