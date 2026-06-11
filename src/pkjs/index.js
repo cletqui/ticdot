@@ -32,6 +32,12 @@ var clayConfig = [
       { type: "heading", defaultValue: "Display" },
       {
         type: "toggle",
+        messageKey: "LittleEndianDots",
+        label: "Binary Dots: LSB First",
+        defaultValue: true,
+      },
+      {
+        type: "toggle",
         messageKey: "ShowBatteryDots",
         label: "Battery Dots",
         defaultValue: true,
@@ -77,6 +83,12 @@ var clayConfig = [
         messageKey: "ShowEventDot",
         label: "Event Dot",
         defaultValue: true,
+      },
+      {
+        type: "toggle",
+        messageKey: "ShowHourTicks",
+        label: "Hour Ticks",
+        defaultValue: false,
       },
       {
         type: "toggle",
@@ -167,6 +179,7 @@ var clayConfig = [
       { type: "heading", defaultValue: "Health" },
       colorSelect("HrColor", "Heart Rate Color", 7),
       colorSelect("HrAlertColor", "Heart Rate Alert Color", 1),
+      colorSelect("HrErrorColor", "Heart Rate Error Color", 6),
       {
         type: "slider",
         messageKey: "HrAlertBpm",

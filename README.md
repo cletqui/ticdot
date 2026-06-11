@@ -47,7 +47,7 @@ Single dots arranged clockwise after the battery group. Each can be toggled inde
 | Alarm        | No alarm   | Upcoming alarm pending                            |
 | Notification | No notifs  | Unread notifications; alert color above threshold |
 | Event        | No events  | Upcoming calendar event                           |
-| Heart rate   | No reading | Normal BPM; alert color above threshold           |
+| Heart rate   | No reading | Normal BPM; alert color above threshold; configurable error color when sensor fails |
 | Activity     | Idle       | Walk or run detected                              |
 
 ### Steps (4:30–7:30) — 10 dots
@@ -56,11 +56,11 @@ Each dot = 1/10th of the daily goal (default 10 000 steps). Lights up as steps a
 
 ### Month (10–11 o'clock) — 4 dots, binary
 
-4-bit encoding, MSB nearest 12. January = `0001`, December = `1100`.
+4-bit encoding. Default is LSB nearest 12 (little-endian): January = `1000`, December = `0011`. Can be switched to MSB-first (big-endian) in settings.
 
 ### Date (10–11 o'clock) — 5 dots, binary
 
-5-bit encoding, MSB nearest 12. Day 1 = `00001`, day 31 = `11111`.
+5-bit encoding. Default is LSB nearest 12 (little-endian): Day 1 = `10000`, day 31 = `11111`. Can be switched to MSB-first (big-endian) in settings.
 
 ### Weekday (10 o'clock) — 1 dot
 
@@ -82,25 +82,27 @@ All seven colors are individually configurable.
 
 Configured from the Pebble / Rebble phone app. All dot groups can be toggled on or off individually; the layout adapts automatically.
 
-| Section        | Setting                                  | Default       |
-| -------------- | ---------------------------------------- | ------------- |
-| Display        | Battery / Steps / Date / Month / Weekday | All on        |
-| Display        | Alarm / Event dots                       | On            |
-| Display        | Notification dot                         | Off           |
-| Display        | Heart rate / Activity dots               | On            |
-| Steps          | Daily step goal                          | 10 000        |
-| Steps          | 1st / 2nd over-goal color                | Green / Cyan  |
-| Clock Hands    | Hour hand color                          | Red           |
-| Clock Hands    | Minute hand color                        | White         |
-| Bluetooth      | Vibrate on disconnect                    | On            |
-| Bluetooth      | Connected dot color                      | White         |
-| Alarm & Events | Alarm / Event dot color                  | White         |
-| Notifications  | Normal / Alert color                     | White / Red   |
-| Notifications  | Alert threshold (notif count)            | 5             |
-| Health         | Heart rate normal / alert color          | White / Red   |
-| Health         | HR alert threshold (BPM)                 | 100           |
-| Health         | Activity dot color                       | Green         |
-| Weekday Colors | Per-day color (Sun–Sat)                  | Planetary     |
+| Section        | Setting                                  | Default        |
+| -------------- | ---------------------------------------- | -------------- |
+| Display        | Binary dots LSB first                    | On             |
+| Display        | Hour ticks                               | Off            |
+| Display        | Battery / Steps / Date / Month / Weekday | All on         |
+| Display        | Alarm / Event dots                       | On             |
+| Display        | Notification dot                         | Off            |
+| Display        | Heart rate / Activity dots               | On             |
+| Steps          | Daily step goal                          | 10 000         |
+| Steps          | 1st / 2nd over-goal color                | Green / Cyan   |
+| Clock Hands    | Hour hand color                          | Red            |
+| Clock Hands    | Minute hand color                        | White          |
+| Bluetooth      | Vibrate on disconnect                    | On             |
+| Bluetooth      | Connected dot color                      | White          |
+| Alarm & Events | Alarm / Event dot color                  | White          |
+| Notifications  | Normal / Alert color                     | White / Red    |
+| Notifications  | Alert threshold (notif count)            | 5              |
+| Health         | Heart rate normal / alert / error color  | White / Red / Magenta |
+| Health         | HR alert threshold (BPM)                 | 100            |
+| Health         | Activity dot color                       | Green          |
+| Weekday Colors | Per-day color (Sun–Sat)                  | Planetary      |
 
 Available colors: Orange, Red, Green, Blue, Cyan, Yellow, Magenta, White, Light Gray, Pink.
 

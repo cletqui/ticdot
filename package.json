@@ -1,7 +1,7 @@
 {
   "name": "ticdot",
   "author": "clet",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "keywords": [
     "pebble-app"
   ],
@@ -60,7 +60,10 @@
       "HrColor",
       "HrAlertColor",
       "HrAlertBpm",
-      "ActivityColor"
+      "ActivityColor",
+      "LittleEndianDots",
+      "ShowHourTicks",
+      "HrErrorColor"
     ],
     "resources": {
       "media": []

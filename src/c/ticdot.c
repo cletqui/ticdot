@@ -6,7 +6,7 @@
 
 #define SPACING_DEG 10 // dot-to-dot spacing within a group
 #define GAP1_DEG 15    // gap between BT dot and first group
-#define GAP2_DEG 12    // gap between groups
+#define GAP2_DEG 13    // gap between groups
 
 static Window *s_window;
 static Layer *s_canvas;
@@ -31,6 +31,7 @@ static int s_notif_count;
 static bool s_alarm_pending;
 static bool s_event_pending;
 static int s_heart_rate; // BPM, 0 = no data
+static bool s_heart_rate_error;
 static bool s_activity_active;
 
 // Settings — fields appended at end only, never reordered, for persist compat
@@ -62,6 +63,9 @@ typedef struct {
   uint8_t hr_alert_color_idx;
   uint8_t hr_alert_bpm;
   uint8_t activity_color_idx;
+  bool little_endian_dots;
+  bool show_hour_ticks;
+  uint8_t hr_error_color_idx;
 } Settings;
 
 static Settings s_settings;
@@ -108,6 +112,9 @@ static void load_settings(void) {
       .hr_alert_color_idx = 1, // Red
       .hr_alert_bpm = 100,
       .activity_color_idx = 2, // Green
+      .little_endian_dots = true,
+      .show_hour_ticks = false,
+      .hr_error_color_idx = 6, // Magenta
   };
   persist_read_data(SETTINGS_PERSIST_KEY, &s_settings, sizeof(s_settings));
 }
@@ -168,10 +175,16 @@ static void update_health_state(void) {
     time_t now = time(NULL);
     HealthServiceAccessibilityMask mask = health_service_metric_accessible(
         HealthMetricHeartRateBPM, now - 300, now);
-    s_heart_rate =
-        (mask & HealthServiceAccessibilityMaskAvailable)
-            ? (int)health_service_peek_current_value(HealthMetricHeartRateBPM)
-            : 0;
+    if (mask & HealthServiceAccessibilityMaskAvailable) {
+      s_heart_rate = (int)health_service_peek_current_value(HealthMetricHeartRateBPM);
+      s_heart_rate_error = false;
+    } else if (mask & HealthServiceAccessibilityMaskNotSupported) {
+      s_heart_rate = 0;
+      s_heart_rate_error = false;
+    } else {
+      s_heart_rate = 0;
+      s_heart_rate_error = true;
+    }
   }
   if (s_settings.show_activity_dot) {
     HealthActivityMask activities = health_service_peek_current_activities();
@@ -212,6 +225,18 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
 
   graphics_context_set_fill_color(ctx, GColorBlack);
   graphics_fill_rect(ctx, layer_get_bounds(layer), 0, GCornerNone);
+
+  // Hour tick marks just inside the dot ring
+  if (s_settings.show_hour_ticks) {
+    graphics_context_set_stroke_color(ctx, GColorDarkGray);
+    graphics_context_set_stroke_width(ctx, 1);
+    for (int h = 0; h < 12; h++) {
+      int32_t a = deg_to_trig(h * 30);
+      graphics_draw_line(ctx,
+                         point_on_circle(center, a, s_outer_r - 12),
+                         point_on_circle(center, a, s_outer_r - 5));
+    }
+  }
 
   // BT dot at 12 o'clock
   graphics_context_set_fill_color(
@@ -271,7 +296,8 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
   }
 
   if (s_settings.show_hr_dot) {
-    GColor c = s_heart_rate == 0 ? GColorDarkGray
+    GColor c = s_heart_rate_error ? get_color(s_settings.hr_error_color_idx)
+               : s_heart_rate == 0 ? GColorDarkGray
                : s_heart_rate >= s_settings.hr_alert_bpm
                    ? get_color(s_settings.hr_alert_color_idx)
                    : get_color(s_settings.hr_color_idx);
@@ -310,7 +336,8 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
 
   if (s_settings.show_month_dots) {
     for (int i = 0; i < 4; i++) {
-      bool lit = (s_month & (1 << (3 - i))) != 0;
+      int bit = s_settings.little_endian_dots ? i : (3 - i);
+      bool lit = (s_month & (1 << bit)) != 0;
       graphics_context_set_fill_color(ctx, lit ? GColorWhite : GColorDarkGray);
       graphics_fill_circle(ctx,
                            point_on_circle(center,
@@ -323,7 +350,8 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
 
   if (s_settings.show_date_dots) {
     for (int i = 0; i < 5; i++) {
-      bool lit = (s_day & (1 << (4 - i))) != 0;
+      int bit = s_settings.little_endian_dots ? i : (4 - i);
+      bool lit = (s_day & (1 << bit)) != 0;
       graphics_context_set_fill_color(ctx, lit ? GColorWhite : GColorDarkGray);
       graphics_fill_circle(ctx,
                            point_on_circle(center,
@@ -433,6 +461,9 @@ static void inbox_received(DictionaryIterator *iter, void *context) {
   APPLY_U8(MESSAGE_KEY_HrAlertColor, hr_alert_color_idx)
   APPLY_U8(MESSAGE_KEY_HrAlertBpm, hr_alert_bpm)
   APPLY_U8(MESSAGE_KEY_ActivityColor, activity_color_idx)
+  APPLY_BOOL(MESSAGE_KEY_LittleEndianDots, little_endian_dots)
+  APPLY_BOOL(MESSAGE_KEY_ShowHourTicks, show_hour_ticks)
+  APPLY_U8(MESSAGE_KEY_HrErrorColor, hr_error_color_idx)
 
 #undef APPLY_BOOL
 #undef APPLY_U8
