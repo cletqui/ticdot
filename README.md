@@ -71,9 +71,9 @@ Color encodes the day, defaulting to the French/ancient planetary associations:
 | Sunday    | Sol     | Yellow     |
 | Monday    | Luna    | Light Gray |
 | Tuesday   | Mars    | Red        |
-| Wednesday | Mercury | Orange     |
-| Thursday  | Jupiter | Blue       |
-| Friday    | Venus   | Green      |
+| Wednesday | Mercury | Green      |
+| Thursday  | Jupiter | Orange     |
+| Friday    | Venus   | Pink       |
 | Saturday  | Saturn  | Magenta    |
 
 All seven colors are individually configurable.
@@ -102,7 +102,7 @@ Configured from the Pebble / Rebble phone app. All dot groups can be toggled on 
 | Health         | Activity dot color                       | Green         |
 | Weekday Colors | Per-day color (Sun–Sat)                  | Planetary     |
 
-Available colors: Orange, Red, Green, Blue, Cyan, Yellow, Magenta, White, Light Gray.
+Available colors: Orange, Red, Green, Blue, Cyan, Yellow, Magenta, White, Light Gray, Pink.
 
 ## Power
 
