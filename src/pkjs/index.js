@@ -10,6 +10,7 @@ var COLOR_OPTIONS = [
   { label: "Magenta", value: 6 },
   { label: "White", value: 7 },
   { label: "Light Gray", value: 8 },
+  { label: "Pink", value: 9 },
 ];
 
 function colorSelect(messageKey, label, defaultValue) {
@@ -186,9 +187,9 @@ var clayConfig = [
       colorSelect("WeekdayColor0", "Sunday", 5),
       colorSelect("WeekdayColor1", "Monday", 8),
       colorSelect("WeekdayColor2", "Tuesday", 1),
-      colorSelect("WeekdayColor3", "Wednesday", 0),
-      colorSelect("WeekdayColor4", "Thursday", 3),
-      colorSelect("WeekdayColor5", "Friday", 2),
+      colorSelect("WeekdayColor3", "Wednesday", 2),
+      colorSelect("WeekdayColor4", "Thursday", 0),
+      colorSelect("WeekdayColor5", "Friday", 9),
       colorSelect("WeekdayColor6", "Saturday", 6),
     ],
   },

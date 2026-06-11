@@ -67,9 +67,11 @@ typedef struct {
 static Settings s_settings;
 
 // 0=Orange 1=Red 2=Green 3=Blue 4=Cyan 5=Yellow 6=Magenta 7=White 8=LightGray
+// 9=Pink
 static const GColor s_color_table[] = {
-    GColorOrange, GColorRed,     GColorIslamicGreen, GColorBlue,     GColorCyan,
-    GColorYellow, GColorMagenta, GColorWhite,        GColorLightGray};
+    GColorOrange,    GColorRed,         GColorIslamicGreen, GColorBlue,
+    GColorCyan,      GColorYellow,      GColorMagenta,      GColorWhite,
+    GColorLightGray, GColorShockingPink};
 
 static GColor get_color(uint8_t idx) {
   return s_color_table[idx % ARRAY_LENGTH(s_color_table)];
@@ -97,9 +99,9 @@ static void load_settings(void) {
       .notif_alert_color_idx = 1,  // Red
       .notif_threshold = 5,
       .event_color_idx = 7, // White
-      // French/ancient planetary: Sun=Yellow Mon=LightGray Tue=Red Wed=Orange
-      //                           Thu=Blue   Fri=Green     Sat=Magenta
-      .weekday_color_idx = {5, 8, 1, 0, 3, 2, 6},
+      // French/ancient planetary: Sun=Yellow Mon=LightGray Tue=Red Wed=Green
+      //                           Thu=Orange Fri=Pink      Sat=Magenta
+      .weekday_color_idx = {5, 8, 1, 2, 0, 9, 6},
       .show_hr_dot = true,
       .show_activity_dot = true,
       .hr_color_idx = 7,       // White
@@ -387,18 +389,23 @@ static void connection_handler(bool connected) {
 static void inbox_received(DictionaryIterator *iter, void *context) {
   Tuple *t;
 
-// Clay sends select/slider values as CSTRING (HTML form data is always strings).
-// Read with atoi() when the tuple type is CSTRING, fall back to numeric read otherwise.
-#define TUPLE_INT_VAL(t)  ((t)->type == TUPLE_CSTRING ? atoi((t)->value->cstring) : (t)->value->int32)
-#define APPLY_BOOL(key, field) \
-  t = dict_find(iter, key);   \
-  if (t) s_settings.field = TUPLE_INT_VAL(t) != 0;
-#define APPLY_U8(key, field)   \
-  t = dict_find(iter, key);   \
-  if (t) s_settings.field = (uint8_t)TUPLE_INT_VAL(t);
-#define APPLY_I32(key, field)  \
-  t = dict_find(iter, key);   \
-  if (t) s_settings.field = (int)TUPLE_INT_VAL(t);
+// Clay sends select/slider values as CSTRING (HTML form data is always
+// strings). Read with atoi() when the tuple type is CSTRING, fall back to
+// numeric read otherwise.
+#define TUPLE_INT_VAL(t)                                                       \
+  ((t)->type == TUPLE_CSTRING ? atoi((t)->value->cstring) : (t)->value->int32)
+#define APPLY_BOOL(key, field)                                                 \
+  t = dict_find(iter, key);                                                    \
+  if (t)                                                                       \
+    s_settings.field = TUPLE_INT_VAL(t) != 0;
+#define APPLY_U8(key, field)                                                   \
+  t = dict_find(iter, key);                                                    \
+  if (t)                                                                       \
+    s_settings.field = (uint8_t)TUPLE_INT_VAL(t);
+#define APPLY_I32(key, field)                                                  \
+  t = dict_find(iter, key);                                                    \
+  if (t)                                                                       \
+    s_settings.field = (int)TUPLE_INT_VAL(t);
 
   APPLY_I32(MESSAGE_KEY_StepGoal, step_goal)
   APPLY_BOOL(MESSAGE_KEY_VibrateOnDisconnect, vibrate_disconnect)
